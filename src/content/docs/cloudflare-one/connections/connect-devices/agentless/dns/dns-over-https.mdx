@@ -148,12 +148,12 @@ Save the service token's `client_id`, `client_secret`, and `id`.
 
 ```bash
 curl --request PUT \
-"https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/access/organizations/doh/{service_token_id}" \
+"https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/access/organizations/doh/$SERVICE_TOKEN_ID" \
 --header "X-Auth-Email: <EMAIL>" \
 --header "X-Auth-Key: <API_KEY>"
 ```
 
-If you get an `access.api.error.service_token_not_found` error, check that `{service_token_id}` is the value of `id` and not `client_id`.
+If you get an `access.api.error.service_token_not_found` error, check that `$SERVICE_TOKEN_ID` is the value of `id` and not `client_id`.
 
 <Details header="Example response">
 
