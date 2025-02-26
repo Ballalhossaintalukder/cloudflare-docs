@@ -49,17 +49,17 @@ You may create and manage additional Cache instances via the [`caches.open`](htt
 let myCache = await caches.open('custom:cache');
 await myCache.match(request);
 ```
+:::note
 When using the cache API, avoid overriding the hostname in cache requests, as this can lead to unnecessary DNS lookups and cache inefficiencies. Always use the hostname that matches the domain associated with your Worker.
 
 ```js
-async fetch(request, env, ctx) {
-// avoid overriding the request URL or passing a new request into the cache API
-request.url = "https://some-overridden-value.com";
+// avoid overriding the URL in request or passing a new request into the cache API
+request.url = "https://some-overridden-value.com/";
 
 let myCache = await caches.open('custom:cache');
-await myCache.match(request);
-},
+let response = await myCache.match(request);
 ```
+:::
 ***
 
 ## Headers
