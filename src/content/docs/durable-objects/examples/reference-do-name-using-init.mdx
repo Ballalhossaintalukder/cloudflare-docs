@@ -10,7 +10,7 @@ sidebar:
 description: Access the name from within a Durable Object using RpcTarget.
 ---
 
-import { TabItem, Tabs, GlossaryTooltip, TypeScriptExample } from "~/components";
+import { TabItem, Tabs, GlossaryTooltip } from "~/components";
 
 Once you create a Durable Object using [`idFromName`](/durable-objects/api/namespace/#idfromname), you cannot access the Durable Object [`name`](/durable-objects/api/id/#name) within the Durable Object class itself. Moreover, if you want to set some metadata for the Durable Object, you cannot do it directly in the Durable Object. Instead, you have to pass the metadata to every method you call on the Durable Object, which is not ideal.
 
@@ -25,7 +25,6 @@ This example does not persist the Durable Object metadata. It demonstrates how t
 3. Pass the metadata (name in this example) to a Durable Object method
 4. Cleans up the `RpcTarget` class after use
 
-<TypeScriptExample>
 ```ts
 import { DurableObject, RpcTarget } from 'cloudflare:workers';
 
@@ -143,11 +142,8 @@ export default {
 } satisfies ExportedHandler<Env>;
 
 ```
-</TypeScriptExample>
-
 
 This example persists the Durable Object metadata. It demonstrates similar steps as the previous example, but uses Durable Object storage to store the metadata.
-
 
 ```ts
 import { DurableObject, RpcTarget } from 'cloudflare:workers';
