@@ -111,6 +111,35 @@ This setting is primarily used as a prerequisite for [WARP Connector](/cloudflar
 
 The CGNAT IP assigned to a WARP device is permanent until the device unregisters from your Zero Trust organization. Disconnects and reconnects do not change the IP address assignment.
 
+### Global WARP override
+
+<Details header="Feature availability">
+
+| [WARP modes](/cloudflare-one/connections/connect-devices/warp/configure-warp/warp-modes/) | [Zero Trust plans](https://www.cloudflare.com/teams-pricing/) |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| All modes                                                             | All plans                                                     |
+
+| System   | Availability | Minimum WARP version |
+| -------- | ------------ | -------------------- |
+| Windows  | ✅           | 2024.12.554.0        |
+| macOS    | ✅           |       |
+| Linux    | ✅           |         |
+| iOS      | ✅           | 1.8                  |
+| Android  | ✅           |                      |
+| ChromeOS | ✅           |                      |
+
+</Details>
+
+:::note
+Requires the [Super Administrator](/cloudflare-one/roles-permissions/) role.
+:::
+
+When you turn on **Global WARP override**, Cloudflare will immediately disconnect all WARP clients that are currently connected to your Zero Trust organization. This allows WARP to fail open in case of an incident or outage. [Auto connect](#auto-connect) will not apply while the override is on. Users will receive a notification on their device, and the WARP client will display `Error code: GLOBAL_WARP_OVERRIDE`.
+
+If [Lock WARP switch](#lock-warp-switch) is `Disabled`, the user will be able to manually reconnect using the WARP GUI or the `warp-cli connect` command. This allows test users to come back online as needed to test resolution of the incident that led to the global disconnect. It also allows users who may not be impacted by the incident to resume normal operations.
+
+To immediately reconnect all WARP clients, turn off **Global WARP override**.
+
 ## Device settings
 
 ### Captive portal detection
