@@ -210,13 +210,13 @@ API value: `redirect`
 
 </Details>
 
-The Redirect action allows you to redirect matched HTTP requests to a different specified URL.
+The Redirect action allows you to redirect matched HTTP requests to a different URL you specify.
 
-#### Send policy context
+#### Policy URL redirect
 
-When you turn on **Send policy context**, Gateway will include context.
+When you turn on **Send policy context**, Gateway will include context in logs.
 
-#### Preserve original URL and query string
+When you turn on **Preserve original URL and query string**, Gateway will append the original path and query string to the redirect URL. For example, if the original URL is `example.com/path/to/page?query&string`, Gateway will redirect it to `internalapp.com/path/to/page?query&string`.
 
 ### Isolate
 
