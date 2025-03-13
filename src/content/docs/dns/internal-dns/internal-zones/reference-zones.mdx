@@ -9,8 +9,6 @@ import { Example, Render } from "~/components";
 
 <Render file="reference-zone-intro" />
 
-Each internal zone can only reference one other zone, but the same zone can be referenced by multiple internal zones. Public zones cannot be used as reference zones.
-
 ## Steps
 
 To set up a reference zone, use the [Update DNS settings](/api/resources/dns/subresources/settings/methods/edit/) endpoint. In `--data`, specify the `internal_dns` object with the parameter `reference_zone_id`.
