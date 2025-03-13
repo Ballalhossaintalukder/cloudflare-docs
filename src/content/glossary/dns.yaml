@@ -27,7 +27,7 @@ entries:
 
   - term: DNS record
     general_definition: |-
-      DNS records are instructions that live in authoritative DNS servers and provide information about a domain including what IP address is associated with that domain and how to handle requests for that domain.
+      DNS records are instructions that live in authoritative DNS servers and provide information about a domain, including what IP address is associated with that domain and how to handle requests for that domain.
 
   - term: DNS server
     general_definition: |-
