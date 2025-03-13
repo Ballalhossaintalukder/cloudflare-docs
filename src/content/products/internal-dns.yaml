@@ -1,0 +1,9 @@
+name: Internal DNS
+
+product:
+  title: Internal DNS
+  url: /dns/internal-dns/
+  group: Application performance
+
+meta:
+  description: Leverage Cloudflare DNS for your internal resources.
