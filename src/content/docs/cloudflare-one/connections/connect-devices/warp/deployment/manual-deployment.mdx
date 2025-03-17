@@ -15,13 +15,13 @@ If you plan to direct your users to manually download and configure the WARP cli
 
 ## Windows, macOS, and Linux
 
-### Enroll via the GUI
+### Enroll using the GUI
 
 <Render file="warp/enroll-desktop" />
 
 The device is now protected by your organization's Zero Trust policies.
 
-### Enroll via the CLI
+### Enroll using the CLI
 
 To enroll your device using the terminal:
 
@@ -74,7 +74,58 @@ The device is now protected by your organization's Zero Trust policies. For more
 
 ## iOS, Android, and ChromeOS
 
+### Enroll manually
+
 <Render file="warp/enroll-ios-android" />
+
+The device is now protected by your organization's Zero Trust policies.
+
+### Enroll using a QR code
+
+<Details header="Feature availability">
+
+| System   | Availability | Minimum WARP version |
+| -------- | ------------ | -------------------- |
+| Windows  | ❌           |                       |
+| macOS    | ❌           |                      |
+| Linux    | ❌           |                      |
+| iOS      | ✅           | 1.5                   |
+| Android  | ✅           |                      |
+| ChromeOS | ✅           |                      |
+
+</Details>
+
+Administrators can provide users with a custom login link or QR code that automatically fills in your organization's <GlossaryTooltip term="team name">team name</GlossaryTooltip> during device enrollment. Using a QR code reduces the potential for error that comes with manual entry of the team name.
+
+#### Generate a QR code
+
+To generate a device enrollment QR code:
+
+1. Copy the following link, replacing `your_team_name` with your Zero Trust <GlossaryTooltip term="team name">team name</GlossaryTooltip>:
+		```txt
+		cf1app://oneapp.cloudflare.com/team?name=your_team_name
+		```
+2. Use any QR code generator to embed the link in a QR code.
+3. Distribute the QR code to users.
+
+#### Use the QR code
+
+To enroll a device using the QR code:
+
+1. [Download](/cloudflare-one/connections/connect-devices/warp/download-warp/) and install the Cloudflare One Agent app.
+2. Scan the QR code provided by your administrator. Alternatively, go to the login link that is embedded in the QR code.
+
+		The Cloudflare One Agent app will open and start the onboarding flow.
+3. Review the privacy policy and select **Accept**.
+4. On the **Enter team name** screen, confirm that the pre-populated <GlossaryTooltip term="team name">team name</GlossaryTooltip> matches your organization.
+
+		:::note[`Already Authenticated` error]
+		If Cloudflare One Agent is already logged in using another team name, you must first log out of that account. Go to **Settings** > **Account** to log out, and then retry the QR code or login link.
+		:::
+6. Complete the authentication steps required by your organization.
+7. After authenticating, select **Install VPN Profile**.
+8. In the **Connection request** popup window, select **OK**.
+9. If you did not enable [auto-connect](https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/configure-warp/warp-settings/#auto-connect), manually turn on the switch to **Connected**.
 
 The device is now protected by your organization's Zero Trust policies.
 
