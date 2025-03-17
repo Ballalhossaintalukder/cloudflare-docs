@@ -9,10 +9,10 @@ product:
 
 meta:
   title: AutoRAG
-  description:
+  description: Create fully managed RAG pipelines for your AI applications.
   author: '@cloudflare'
 
 resources:
-    community:
+    community: 
     dashboard_link:
     discord: https://discord.gg/cloudflaredev

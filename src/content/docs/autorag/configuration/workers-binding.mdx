@@ -1,0 +1,87 @@
+---
+pcx_content_type: concept
+title: Workers binding
+sidebar:
+  order: 6
+---
+
+import {
+	Badge,
+	Description,
+	Render,
+	TabItem,
+	Tabs,
+	WranglerConfig,
+    MetaInfo,
+    Type,
+} from "~/components";
+
+A binding enables your Worker or Pages Function to interact with resources, like AutoRAG, on the Cloudflare Developer Platform. To use your AutoRAG with Workers or Pages, you can create an AI binding. 
+
+
+## Workers
+
+[Workers](/workers/) provides a serverless execution environment that allows you to create new applications or augment existing ones. 
+
+You can create bindings on the Cloudflare dashboard or by updating your [Wrangler file](/workers/wrangler/configuration/). To bind AutoRAG to your Worker, add the following to the end of your Wrangler file:
+
+<WranglerConfig>
+
+```toml
+[ai]
+binding = "AI" # i.e. available in your Worker on env.AI
+```
+
+</WranglerConfig>
+
+## Pages Functions
+
+[Pages Functions](/pages/functions/) allow you to build full-stack applications with Cloudflare Pages by executing code on the Cloudflare network. Functions are Workers under the hood.
+
+To configure an AutoRAG binding in your Pages Function, you must use the Cloudflare Dashboard. Refer to [AI bindings](/pages/functions/bindings/#workers-ai) for instructions. [Anni Need to update here!]
+
+## Methods
+
+There are...
+
+### `aiSearch()`
+
+For an AutoRAG named `my-autorag`...
+
+```js
+const answer = await env.AI.AutoRAG('my-autorag').aiSearch({
+    query: 'What are the latest Cloudflare Workers updates?'
+});
+```
+
+#### Parameters
+
+- `query` <Type text="string" /> <MetaInfo text="required" />
+- `max_num_results` <Type text="number" /> <MetaInfo text="optional" />
+- `ranking_options` 
+    - `score_threshold` <Type text="number" /> <MetaInfo text="optional" />
+- `rewrite_query` <Type text="boolean" /> <MetaInfo text="optional" />
+
+#### Response
+
+### `search()`
+
+For an AutoRAG named `my-autorag`...
+
+```js
+const answer = await env.AI.AutoRAG('my-autorag').search({
+    query: 'What are the latest Cloudflare Workers updates?'
+});
+```
+
+#### Parameters
+
+#### Response
+
+
+
+
+
+
+
+
