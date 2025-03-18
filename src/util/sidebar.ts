@@ -1,11 +1,13 @@
 import type { AstroGlobal } from "astro";
-import type { Props } from "@astrojs/starlight/props";
+import type { StarlightRouteData } from "@astrojs/starlight/route-data";
 
 import { getEntry, getCollection } from "astro:content";
 import { rehypeExternalLinksOptions } from "~/plugins/rehype/external-links";
 
-type Link = Extract<Props["sidebar"][0], { type: "link" }> & { order?: number };
-type Group = Extract<Props["sidebar"][0], { type: "group" }> & {
+type Link = Extract<StarlightRouteData["sidebar"][0], { type: "link" }> & {
+	order?: number;
+};
+type Group = Extract<StarlightRouteData["sidebar"][0], { type: "group" }> & {
 	order?: number;
 };
 
@@ -15,7 +17,7 @@ type Badge = Link["badge"];
 const products = await getCollection("products");
 const sidebars = new Map<string, Group>();
 
-export async function getSidebar(context: AstroGlobal<Props>) {
+export async function getSidebar(context: AstroGlobal) {
 	const pathname = context.url.pathname;
 	const segments = pathname.split("/").filter(Boolean);
 
@@ -44,7 +46,7 @@ export async function getSidebar(context: AstroGlobal<Props>) {
 	let memoized = sidebars.get(key);
 
 	if (!memoized) {
-		let group = context.props.sidebar
+		let group = context.locals.starlightRoute.sidebar
 			.filter((entry) => entry.type === "group" && entry.label === product)
 			.at(0) as Group;
 
@@ -223,6 +225,13 @@ async function handleGroup(group: Group): Promise<SidebarEntry> {
 	}
 
 	const idx = group.entries.indexOf(index);
+
+	if (idx === -1) {
+		throw new Error(
+			`[Sidebar] Originally located ${index.href} in ${group.label} entries but unable to find it post-transform`,
+		);
+	}
+
 	const removed = group.entries.splice(idx, 1).at(0) as Link;
 
 	removed.attrs = {
@@ -268,7 +277,7 @@ async function handleLink(link: Link): Promise<Link> {
 		link.badge = inferBadgeVariant(link.badge);
 	}
 
-	if (frontmatter.external_link) {
+	if (frontmatter.external_link && !frontmatter.sidebar.group?.hideIndex) {
 		return {
 			...link,
 			label: link.label.concat(rehypeExternalLinksOptions.content.value),

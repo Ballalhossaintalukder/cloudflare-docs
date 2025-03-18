@@ -98,6 +98,17 @@
 
 # agents
 /agents/build/prompts/ /workers/get-started/prompting/ 301
+/agents/examples/browse-the-web/ /agents/api-reference/browse-the-web/ 301
+/agents/examples/manage-and-sync-state/ /agents/api-reference/store-and-sync-state/ 301
+/agents/examples/rag/ /agents/api-reference/rag/ 301
+/agents/examples/run-workflows/ /agents/api-reference/run-workflows/ 301
+/agents/examples/schedule-tasks/ /agents/api-reference/schedule-tasks/ 301
+/agents/examples/using-ai-models/ /agents/api-reference/using-ai-models/ 301
+/agents/examples/websockets/ /agents/api-reference/websockets/ 301
+/agents/examples/sdk/ /agents/api-reference/agents-api/ 301
+/agents/examples/build-mcp-server/ /agents/api-reference/build-mcp-server/ 301
+/agents/api-reference/build-mcp-server/ /agents/guides/build-mcp-server/ 301
+
 
 # ai
 /ai/ /use-cases/ai/ 301
@@ -252,6 +263,7 @@
 
 # china network
 /support/about-cloudflare/enterprise-documentation/understanding-and-configuring-an-icp-number/ /china-network/concepts/icp/ 301
+/china-network/concepts/china-express/ /china-network/concepts/global-acceleration/ 301
 
 # cloudflare for platforms
 /cloudflare-for-platforms/cloudflare-for-saas/start/advanced-settings/regional-services-for-saas/ /data-localization/regional-services/get-started/ 301
@@ -304,6 +316,7 @@
 /d1/platform/environments/ /d1/configuration/environments/ 301
 /d1/platform/metrics-analytics/ /d1/observability/metrics-analytics/ 301
 /d1/platform/migrations/ /d1/reference/migrations/ 301
+/d1/platform/changelog/ /d1/platform/release-notes/ 301
 /d1/reference/client-api/ /d1/worker-api/ 301
 /d1/reference/environments/ /d1/configuration/environments/ 301
 /d1/reference/metrics-analytics/ /d1/observability/metrics-analytics/ 301
@@ -392,6 +405,7 @@
 /support/dns/troubleshooting/my-dns-doesnt-work/ /dns/troubleshooting/dns-issues/ 301
 /support/dns/troubleshooting/why-was-my-domain-deleted-from-cloudflare/ /dns/zone-setups/troubleshooting/domain-deleted/ 301
 
+# Durable Objects
 /durable-objects/examples/durable-object-example/ /durable-objects/examples/durable-object-in-memory-state/ 301
 /durable-objects/api/hibernatable-websockets-api/ /durable-objects/best-practices/websockets/ 301
 /durable-objects/api/alarms-in-durable-objects/ /durable-objects/api/alarms/ 301
@@ -415,9 +429,19 @@
 /durable-objects/reference/graphql-analytics/ /durable-objects/observability/graphql-analytics/ 301
 /durable-objects/reference/websockets/ /durable-objects/best-practices/websockets/ 301
 /durable-objects/api/transactional-storage-api/ /durable-objects/api/storage-api/ 301
-/durable-objects/platform/changelog/ /durable-objects/changelog/ 301
+/durable-objects/platform/changelog/ /durable-objects/release-notes/ 301
+/durable-objects/changelog/ /durable-objects/release-notes/ 301
 /durable-objects/glossary/ /durable-objects/reference/glossary/ 301
 /durable-objects/get-started/walkthrough/ /durable-objects/get-started/tutorial/ 301
+/durable-objects/get-started/video-series/intro/ /durable-objects/video-tutorials/ 301
+/durable-objects/get-started/video-series/app-frontend/ /durable-objects/video-tutorials/ 301
+/durable-objects/get-started/video-series/deploy-app/ /durable-objects/video-tutorials/ 301
+/durable-objects/get-started/video-series/durable-objects/ /durable-objects/video-tutorials/ 301
+/durable-objects/get-started/video-series/index/ /durable-objects/video-tutorials/ 301
+/durable-objects/get-started/video-series/make-answer-webrtc-calls/ /durable-objects/video-tutorials/ 301
+/durable-objects/get-started/video-series/real-time-messaging/ /durable-objects/video-tutorials/ 301
+/durable-objects/get-started/video-series/serverless-websocket/ /durable-objects/video-tutorials/ 301
+/durable-objects/get-started/video-series/ /durable-objects/video-tutorials/ 301
 
 # email-routing
 /email-routing/enable-email-routing/ /email-routing/get-started/enable-email-routing/ 301
@@ -764,7 +788,7 @@
 /learning-paths/secure-o365-email/ /learning-paths/secure-o365-email/concepts/ 301
 /learning-paths/workers/ /learning-paths/workers/concepts/ 301
 /learning-paths/zero-trust-web-access/ /learning-paths/zero-trust-web-access/concepts/ 301
-
+/learning-paths/application-security/default-traffic-security/security-level/ /learning-paths/application-security/default-traffic-security/browser-integrity/ 301
 
 # more redirects in the /dynamic/ section
 
@@ -1212,6 +1236,7 @@
 /support/troubleshooting/general-troubleshooting/contacting-cloudflare-support/ /support/contacting-cloudflare-support/ 301
 /support/troubleshooting/performance/http2-and-enhanced-http2-prioritization-options-may-affect-content-loading-on-iossafari-devices/ /speed/optimization/protocol/troubleshooting/enhanced-http2-prioritization-ios-safari/ 301
 /support/troubleshooting/performance/ /speed/optimization/ 301
+/support/troubleshooting/planned-maintenance/disruptive-maintenance-windows/ /support/troubleshooting/disruptive-maintenance/ 301
 /support/page-rules/ /rules/page-rules/ 301
 /support/page-rules/configuring-url-forwarding-or-redirects-with-page-rules/ /rules/page-rules/how-to/url-forwarding/ 301
 /support/page-rules/how-do-i-include-or-exclude-a-specific-url-from-cloudflares-page-rules/ /rules/page-rules/reference/wildcard-matching/ 301
@@ -1291,8 +1316,9 @@
 /r2/examples/boto3/ /r2/examples/aws/boto3/ 301
 /r2/buckets/data-location/ /r2/reference/data-location/ 301
 /r2/reference/audit-logs/ /r2/platform/audit-logs/ 301
-/r2/reference/changelog/ /r2/platform/changelog/ 301
-/r2/reference/changelog/index.xml /r2/platform/changelog/index.xml 301
+/r2/reference/changelog/ /r2/platform/release-notes/ 301
+/r2/reference/changelog/index.xml /r2/platform/release-notes/index.xml 301
+/r2/platform/changelog/ /r2/platform/release-notes 301
 /r2/reference/limits/ /r2/platform/limits/ 301
 /r2/reference/metrics-analytics/ /r2/platform/metrics-analytics/ 301
 /r2/examples/mastodon/ /r2/tutorials/mastodon/ 301
@@ -1642,9 +1668,14 @@
 /workers/observability/baselime-integration/ /workers/observability/integrations/baselime-integration/ 301
 /workers-ai/tutorials/image-generator-flux/ /workers-ai/tutorials/image-generation-playground/ 301
 
+# workflows
+
+/workflows/reference/storage-options/ /workers/platform/storage-options/ 301
+
 # workers KV
 /kv/platform/environments/ /kv/reference/environments/ 301
 /kv/platform/kv-commands/ /kv/reference/kv-commands/ 301
+/kv/platform/changelog/ /kv/platform/release-notes/ 301
 /kv/learning/ /kv/reference/ 301
 /kv/learning/how-kv-works/ /kv/concepts/how-kv-works/ 301
 /kv/learning/kv-bindings/ /kv/concepts/kv-bindings/ 301
@@ -1678,7 +1709,8 @@
 /hyperdrive/learning/query-caching/ /hyperdrive/configuration/query-caching/ 301
 /hyperdrive/learning/troubleshooting/ /hyperdrive/reference/troubleshooting/ 301
 /hyperdrive/platform/supported-databases/ /hyperdrive/reference/supported-databases/ 301
-/hyperdrive/changelog/ /hyperdrive/platform/changelog/ 301
+/hyperdrive/changelog/ /hyperdrive/platform/release-notes/ 301
+/hyperdrive/platform/changelog/ /hyperdrive/platform/release-notes/ 301
 /hyperdrive/learning/ /hyperdrive/configuration/ 301
 /hyperdrive/reference/metrics/ /hyperdrive/observability/metrics/ 301
 /hyperdrive/reference/troubleshooting/ /hyperdrive/observability/troubleshooting/ 301
@@ -1927,6 +1959,7 @@
 /cloudflare-one/policies/filtering/http-policies/data-loss-prevention/* /cloudflare-one/policies/data-loss-prevention/ 301
 /cloudflare-one/policies/data-loss-prevention/configuration-guides/* /cloudflare-one/policies/data-loss-prevention/dlp-policies/common-policies/ 301
 /cloudflare-one/insights/dex/fleet-status/ /cloudflare-one/insights/dex/monitoring/ 301
+/cloudflare-one/identity/idp-integration/gsuite/ /cloudflare-one/identity/idp-integration/google-workspace/ 301
 
 # Learning paths
 /learning-paths/modules/cybersafe/cybersafe-account-creation/* /learning-paths/cybersafe/account-creation/:splat 301
