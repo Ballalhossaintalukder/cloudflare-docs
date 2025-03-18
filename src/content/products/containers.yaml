@@ -1,0 +1,17 @@
+name: Containers
+
+product:
+  title: Containers
+  url: /containers/
+  group: Developer platform
+
+meta:
+  title: Containers docs
+  description: Enhance your Workers with serverless containerized applications
+  author: "@cloudflare"
+
+resources:
+  community: https://community.cloudflare.com/c/developers/containers
+  dashboard_link: https://dash.cloudflare.com/?to=/:account/workers/containers
+  # learning_center: https://www.cloudflare.com/learning/...
+  # discord: https://discord.com/channels/...

@@ -1,0 +1,22 @@
+---
+pcx_content_type: concept
+title: Limits
+sidebar:
+  order: 4
+---
+
+import { Render } from "~/components";
+
+Containers limits are detailed below.
+
+| Feature                                | Workers Paid |
+| -------------------------------------- | ------------ |
+| Container Count                        | 10 [^1]      |
+| Max Concurrent Instances per Container | 20 [^1]      |
+| Max Concurrent Instances per Account   | 100          |
+| Images in Registry                     | X            |
+| Image Size                             | X            |
+
+[^1]: This limit will be raised as we continue the private beta.
+
+<Render file="limits_increase" product="workers" />

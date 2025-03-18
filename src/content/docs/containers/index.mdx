@@ -1,0 +1,157 @@
+---
+title: Containers
+order: 0
+type: overview
+pcx_content_type: overview
+sidebar:
+  order: 1
+head:
+  - tag: title
+    content: Overview
+---
+
+import {
+	CardGrid,
+	Description,
+	Feature,
+	LinkTitleCard,
+	Plan,
+	RelatedProduct,
+	TabItem,
+	Tabs,
+} from "~/components";
+
+<Description>
+
+Enhance your Workers with serverless containerized applications
+
+</Description>
+
+<Plan type="workers-paid" />
+
+With Containers, you can build applications that integrate Workers with a serverless container runtime.
+Deploy your image to Region:Earth without worrying about managing infrastructure, just define your
+Worker and `wrangler deploy`.
+
+This lets you run:
+
+- Resouce-intensive applications that use more memory, CPU, or disk than Workers allow
+- Applications and libraries that require a specific runtime or Linux-like environment
+- Existing applications or tools that are distributed as images
+
+<Tabs>
+	<TabItem label="Container Code">
+```js
+// get a container-enabled durable object and call a method on in
+async fetch(request, env) {
+	const { "session-id": sessionId } = await request.json();
+	const id = env.CODE_EXECUTOR.idFromName(sessionId);
+	return env.CODE_EXECUTOR.get(id).fetch(request);
+}
+
+// define a durable object to run alongside your container
+
+export class CodeExecutor extends DurableObject {
+	// boot the container with the DO
+  constructor(ctx, env) {
+    super(ctx, env);
+    ctx.blockConcurrencyWhile(
+      startAndWaitForPort(ctx.container, CONTAINER_PORT)
+    );
+  }
+
+    // proxy requests to the container
+    async fetch(request) {
+    	return await proxyFetch(this.ctx.container, request, CONTAINER_PORT);
+    }
+
+}
+
+````
+
+</TabItem>
+<TabItem label="Container Config">
+
+```json
+{
+	"name": "my-container-worker",
+	"main": "src/index.js",
+	"compatibility_date": "2025-03-20",
+	"containers": [
+		{
+			"image": "./Dockerfile",
+			"sleep_after": "30s",
+			"instance_type": "basic",
+			"binding": "CODE_EXECUTOR",
+			"class_name": "CodeExecutor"
+		}
+	]
+}
+````
+
+    </TabItem>
+
+</Tabs>
+
+See the [getting started guide](/containers/get-started/guide/) to start building with Containers.
+
+---
+
+## Next Steps
+
+<Feature header="Deploy your first Container" href="/containers/get-started/" cta="Deploy a Container">
+
+Build and push an image, call the Container from your Worker, understand scaling and routing.
+
+</Feature>
+
+<Feature header="Container Examples" href="/containers/build/rules-of-workflows/" cta="See Examples">
+
+See examples of how to use a Container with a Worker, including statelss and stateful routing,
+regional placement, Workflow and Queue integrations, AI-generated code execution, and short-lived workloads.
+
+</Feature>
+
+---
+
+## More resources
+
+<CardGrid>
+
+<LinkTitleCard
+	title="Pricing"
+	href="/containers/platform/pricing/"
+	icon="seti:shell"
+>
+	Learn about Containers pricing and how to estimate your usage.
+</LinkTitleCard>
+
+<LinkTitleCard
+	title="Limits"
+	href="/containers/platform/limits/"
+	icon="document"
+>
+	Learn about what limits Containers have and how to work within them.
+</LinkTitleCard>
+
+{/* TODO: better icon/link */}
+
+<LinkTitleCard
+	title="Wrangler"
+	href="/workers/wrangler/commands/#containers"
+	icon="document"
+>
+	Learn more about the commands to develop, build and push images, and deploy
+	containers with Wrangler.
+</LinkTitleCard>
+
+<LinkTitleCard
+	title="Closed Beta Discord"
+	href="https://discord.cloudflare.com"
+	icon="discord"
+>
+	Connect with other users in the closed beta on Discord. Ask questions, show
+	what you are building, and discuss the platform with other developers.
+</LinkTitleCard>
+
+</CardGrid>
