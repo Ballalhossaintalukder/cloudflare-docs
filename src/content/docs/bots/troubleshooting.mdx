@@ -71,17 +71,6 @@ Yes. WAF rules are executed before Super Bot Fight Mode. If a WAF custom rule pe
 
 ---
 
-## What is the difference between the threat score and bot management score?
-
-The difference is significant:
-
-- Threat score (_cf.threat_score_) is what Cloudflare uses to determine IP Reputation. It goes from 0 (good) to 100 (bad).
-- Bot management score (_cf.bot_management.score_) is what Cloudflare uses in Bot Management to measure if the request is from a human or a script. The scores range from 1 (bot) to 99 (human). Lower scores indicate the request came from a script, API service, or an automated agent. Higher scores indicate that the request came from a human using a standard desktop or mobile web browser.
-
-These fields are available via [WAF custom rules](/waf/custom-rules/) and other products based on the Ruleset Engine.
-
----
-
 ## What is cf.bot_management.verified_bot?
 
 A request's _cf.bot_management.verified_bot_ value is a boolean indicating whether such request comes from a Cloudflare allowed bot.
@@ -108,7 +97,7 @@ The JA3 Fingerprint can be null or empty in some cases. The most common case is 
 
 Cloudflare maintains a sample list of verified bots in [Cloudflare Radar](https://radar.cloudflare.com/verified-bots).
 
-As a bot operator, in order to be listed by Cloudflare as a Verified Bot, your bot must conform with our [verified bot public policy](/bots/reference/verified-bots-policy/). If your bot meets this criteria, submit this [online application](https://docs.google.com/forms/d/e/1FAIpQLSdqYNuULEypMnp4i5pROSc-uP6x65Xub9svD27mb8JChA_-XA/viewform?usp=sf_link).
+As a bot operator, in order to be listed by Cloudflare as a Verified Bot, your bot must conform with our [verified bot public policy](/bots/concepts/bot/verified-bots/policy/). If your bot meets this criteria, submit this [online application](https://docs.google.com/forms/d/e/1FAIpQLSdqYNuULEypMnp4i5pROSc-uP6x65Xub9svD27mb8JChA_-XA/viewform?usp=sf_link).
 
 ---
 
