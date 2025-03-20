@@ -1,0 +1,94 @@
+---
+title: Managing Workers with the API and IaC
+pcx_content_type: concept
+sidebar:
+  order: 11
+---
+
+import { GitHubCode } from "~/components";
+
+Uploading and managing a Worker is easy with [Wrangler](/workers/wrangler/configuration), but sometimes you need to do it more programmatically or scalably. You might do this with IaC ("Infrastructure as Code") tools or by calling the [Cloudflare API](https://developers.cloudflare.com/api) directly. Use cases for the API include build and deploy scripts, CI/CD pipelines, custom dev tools, or testing. We provide API SDK libraries for common languages that make interacting with the API easier, such as [cloudflare-typescript](https://github.com/cloudflare/cloudflare-typescript). For IaC, a common tool is HashiCorp's Terraform. You can use the [Cloudflare Terraform Provider](/terraform) to create and manage Workers resources.
+
+## Examples
+
+Here are examples of uploading a Worker script with common tools and languages. In particular, they highlight how to upload script content and format [multipart upload metadata](/workers/configuration/multipart-upload-metadata) which is different with each approach.
+
+### curl
+
+Open a terminal or create a shell script to upload a Worker easily with curl. For this example, replace `<account_id>` with your [account id](/fundamentals/setup/find-account-and-zone-ids) and `<api_token>` with an [API token](/fundamentals/api/get-started/create-token) (not Global API key). Reference the Upload Worker Module API docs [here](https://developers.cloudflare.com/api/resources/workers/subresources/scripts/methods/update/).
+
+```bash
+curl https://api.cloudflare.com/client/v4/accounts/<account_id>/workers/scripts/my-hello-world-script \
+  -X PUT \
+  -H 'Authorization: Bearer <api_token>' \
+  -F 'metadata={
+        "main_module": "my-hello-world-script.mjs",
+        "bindings": [
+          {
+            "type": "plain_text",
+            "name": "MESSAGE",
+            "text": "Hello World!"
+          }
+        ],
+        "compatibility_date": "2025-03-11"
+      };type=application/json' \
+  -F 'my-hello-world-script.mjs=@-;filename=my-hello-world-script.mjs;type=application/javascript+module' <<EOF
+export default {
+  async fetch(request, env, ctx) {
+    return new Response(env.MESSAGE, { status: 200 });
+  }
+};
+EOF
+```
+
+:::note
+
+Change `my-hello-world-script.mjs=@-;` to `my-hello-world-script.mjs=@./my-hello-world-script.mjs;` and remove everything after and including `<<EOF` to upload a local file named `my-hello-world-script.mjs` instead.
+:::
+
+### JavaScript/TypeScript
+
+This example uses the [cloudflare-typescript](https://github.com/cloudflare/cloudflare-typescript) library which provides convenient access to the Cloudflare REST API from server-side JavaScript or TypeScript.
+
+<GitHubCode
+	repo="cloudflare/cloudflare-typescript"
+	file="examples/workers/script-upload.ts"
+	commit="4fa90bf9f27574834a9b14a89de11ac56b8269f9"
+	lang="ts"
+	code={{
+		collapse: "1-2",
+	}}
+/>
+
+### Terraform
+
+In this example, you need a local file named `my-hello-world-script.mjs` with script content similar to the above examples. Replace `account_id` with your own. Learn more about the Cloudflare Terraform Provider [here](/terraform).
+
+```tf
+terraform {
+  required_providers {
+    cloudflare = {
+      source = "cloudflare/cloudflare"
+      version = "~> 5"
+    }
+  }
+}
+
+resource "cloudflare_workers_script" "my-hello-world-script" {
+  account_id = "<replace_me>"
+  script_name = "my-hello-world-script"
+  main_module = "my-hello-world-script.mjs"
+  content = trimspace(file("my-hello-world-script.mjs"))
+  bindings = [{
+    name = "MESSAGE"
+    type = "plain_text"
+    text = "Hello World!"
+  }]
+}
+```
+
+:::note
+
+- `trimspace()` removes empty lines in the file
+- The Workers Script resource does not have a `metadata` property like in the above examples. All of the properties found in `metadata` are instead at the top-level of the resource class, such as `bindings` or `compatibility_date`. Please see the [cloudflare_workers_script (Resource) docs](https://registry.terraform.io/providers/cloudflare/cloudflare/latest/docs/resources/workers_script).
+  :::
