@@ -29,7 +29,7 @@ AI context analysis uses machine learning to analyze and adjust the confidence i
 
 DLP submits the context as an AI text embedding vector to [Cloudflare Workers AI](/workers-ai/). Vectors are stored in a database bucket for up to six months, along with relevant metadata from the HTTP request including the URL, HTTP method, matching DLP profile, and Gateway request ID.
 
-To train the model, you need to report true and false positive in your [DLP logs](/cloudflare-one/policies/data-loss-prevention/dlp-policies/logging-options/).
+To train the model, you need to [report false and true positives](/cloudflare-one/policies/data-loss-prevention/dlp-policies/logging-options/#report-true-and-false-positive-to-ai-context-analysis) in your DLP payload logs.
 
 ## Confidence thresholds
 
