@@ -21,6 +21,16 @@ OCR supports scanning `.jpg`/`.jpeg` and `.png` files between 4 KB and 1 MB in s
 
 ## AI context analysis <Badge text="Beta" variant="caution" size="small" /> {/* ai-context-analysis */}
 
+:::note
+AI context analysis only supports Gateway HTTP and HTTPS traffic.
+:::
+
+AI context analysis uses machine learning to analyze and adjust the confidence in a detection based on its surrounding context. DLP will log any matches that are above your detection threshold.
+
+DLP submits the context as an AI text embedding vector to [Cloudflare Workers AI](/workers-ai/). Vectors are stored in a database bucket for up to six months, along with relevant metadata from the HTTP request including the URL, HTTP method, matching DLP profile, and Gateway request ID.
+
+To train the model, you need to report true and false positive in your [DLP logs](/cloudflare-one/policies/data-loss-prevention/dlp-policies/logging-options/).
+
 ## Confidence thresholds
 
 Confidence thresholds indicate how confident Cloudflare DLP is in a DLP detection. DLP determines the confidence by inspecting the content for proximity keywords around the detection.
