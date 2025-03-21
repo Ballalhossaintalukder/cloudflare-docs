@@ -1,6 +1,4 @@
-import { z } from "astro:schema";
 import { getCollection } from "astro:content";
-import { type CollectionEntry } from "astro:content";
 
 export async function getReleaseNotes(opts?: {
 	filter?: Parameters<typeof getCollection<"release-notes">>[1];
