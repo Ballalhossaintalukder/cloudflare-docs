@@ -1,0 +1,48 @@
+---
+pcx_content_type: reference
+title: Private Beta Info
+sidebar:
+  order: 6
+---
+
+Currently, Containers are in private beta. We plan to make Containers available in open beta in several months.
+
+While in private beta, we may make breaking changes to our APIs. We will try to avoid bringing down any workloads
+but cannot guarantee that we will not have to do so.
+
+There are several known changes we plan to make prior to open beta, as well as many planned future features.
+
+## Upcoming Changes
+
+We plan to make the following changes:
+
+- Add Logs to the Dashboard
+- Add autoscaling and load balancing to Containers
+- Add atomic Worker updates so Worker code and Container code stay in sync
+- Improve the local dev experience
+- Expose more information on Container Settings in the dashboard
+- Increase limits on number of containers and container size
+- Add quality of life improvements around writing Containter code and
+  integrating with Durable Objects.
+- Support for a "sleep_after" setting, which will allow you to specify
+  how long after a request a container should be put to sleep.
+- Support for status-based hooks in a container-enabled durable object. These
+  will allow you to run code when a container is started or stopped.
+- Run Durable Objects on the same machine as containers.
+
+## Pricing
+
+During the private beta, Containers are free to use and you are not charged for
+storing images in the Cloudflare registry. However, we do currently charge for Durable
+Object requests, which are necessary to use Containers.
+
+We plan to introduce a dedicated pricing model for Containers in the future.
+
+## Feedback Wanted
+
+There are several areas where we wish to gather feedback from users:
+
+- Does accessing a Container via a Durable Object feel natural?
+- Do you need different mechanisms for routing requests to containers?
+- Do you need different mechanisms for scaling containers?
+- Do you want to integrate Containers with any other Cloudflare services? If so, which ones and how?

@@ -1,10 +1,12 @@
 ---
-title: Containers
+title: Containers (Beta)
 order: 0
 type: overview
 pcx_content_type: overview
 sidebar:
   order: 1
+  badge:
+    text: Beta
 head:
   - tag: title
     content: Overview
@@ -19,50 +21,51 @@ import {
 	RelatedProduct,
 	TabItem,
 	Tabs,
+	Badge,
 } from "~/components";
 
 <Description>
 
-Enhance your Workers with serverless containerized applications
+Enhance your Workers with serverless containers
 
 </Description>
 
 <Plan type="workers-paid" />
 
 With Containers, you can build applications that integrate Workers with a serverless container runtime.
-Deploy your image to Region:Earth without worrying about managing infrastructure, just define your
+Deploy your container image to Region:Earth without worrying about managing infrastructure - just define your
 Worker and `wrangler deploy`.
 
 This lets you run:
 
-- Resouce-intensive applications that use more memory, CPU, or disk than Workers allow
-- Applications and libraries that require a specific runtime or Linux-like environment
-- Existing applications or tools that are distributed as images
+- Resouce-intensive applications that use more memory, CPU, or disk than standard Workers
+- Applications and libraries that require a full filesystem, specific runtime, or Linux-like environment
+- Existing applications and tools that have been distributed as images
 
 <Tabs>
-	<TabItem label="Container Code">
+	<TabItem label="Worker Code">
 ```js
-// get a container-enabled durable object and call a method on in
+// get a container-enabled durable object and call an RPC method
 async fetch(request, env) {
 	const { "session-id": sessionId } = await request.json();
-	const id = env.CODE_EXECUTOR.idFromName(sessionId);
-	return env.CODE_EXECUTOR.get(id).fetch(request);
+	const id = env.MY_CONTAINER.idFromName(sessionId);
+	return env.MY_CONTAINER.get(id).fetch(request);
 }
 
 // define a durable object to run alongside your container
 
-export class CodeExecutor extends DurableObject {
-	// boot the container with the DO
+export class MyContainer extends DurableObject {
+	// start the container with the durable object
   constructor(ctx, env) {
     super(ctx, env);
     ctx.blockConcurrencyWhile(
-      startAndWaitForPort(ctx.container, CONTAINER_PORT)
+      startAndWaitForPort(ctx.container, 4000)
     );
   }
 
     // proxy requests to the container
     async fetch(request) {
-    	return await proxyFetch(this.ctx.container, request, CONTAINER_PORT);
+    	return await proxyFetch(this.ctx.container, request, 4000);
     }
 
 }
@@ -70,22 +73,36 @@ export class CodeExecutor extends DurableObject {
 ````
 
 </TabItem>
-<TabItem label="Container Config">
+<TabItem label="Worker Config">
 
-```json
+```js
 {
-	"name": "my-container-worker",
-	"main": "src/index.js",
-	"compatibility_date": "2025-03-20",
-	"containers": [
+  "name": "container-starter",
+  "main": "src/index.js",
+  "containers": [
+    {
+      "class_name": "MyContainer",
+      "image": "./Dockerfile",
+      "instances": 5,
+      "name": "hello-containers-go"
+    }
+  ],
+  "durable_objects": {
+		"bindings": [
+			{
+				"class_name": "MyContainer",
+        "name": "MY_CONTAINER"
+      }
+    ]
+  }
+	"migrations": [
 		{
-			"image": "./Dockerfile",
-			"sleep_after": "30s",
-			"instance_type": "basic",
-			"binding": "CODE_EXECUTOR",
-			"class_name": "CodeExecutor"
+			"new_sqlite_classes": [
+				"MyContainer"
+			],
+			"tag": "v1"
 		}
-	]
+	],
 }
 ````
 
@@ -93,7 +110,7 @@ export class CodeExecutor extends DurableObject {
 
 </Tabs>
 
-See the [getting started guide](/containers/get-started/guide/) to start building with Containers.
+See the [Getting Started Guide](/containers/get-started/) to start building with Containers.
 
 ---
 
@@ -101,11 +118,11 @@ See the [getting started guide](/containers/get-started/guide/) to start buildin
 
 <Feature header="Deploy your first Container" href="/containers/get-started/" cta="Deploy a Container">
 
-Build and push an image, call the Container from your Worker, understand scaling and routing.
+Build and push an image, call a Container from a Worker, and understand scaling and routing.
 
 </Feature>
 
-<Feature header="Container Examples" href="/containers/build/rules-of-workflows/" cta="See Examples">
+<Feature header="Container Examples" href="/containers/examples/" cta="See Examples">
 
 See examples of how to use a Container with a Worker, including statelss and stateful routing,
 regional placement, Workflow and Queue integrations, AI-generated code execution, and short-lived workloads.
@@ -119,16 +136,16 @@ regional placement, Workflow and Queue integrations, AI-generated code execution
 <CardGrid>
 
 <LinkTitleCard
-	title="Pricing"
-	href="/containers/platform/pricing/"
+	title="Beta Information"
+	href="/containers/reference/closed-beta-info/"
 	icon="seti:shell"
 >
-	Learn about Containers pricing and how to estimate your usage.
+	Learn about the Closed Beta and upcoming features.
 </LinkTitleCard>
 
 <LinkTitleCard
 	title="Limits"
-	href="/containers/platform/limits/"
+	href="/containers/reference/limits/"
 	icon="document"
 >
 	Learn about what limits Containers have and how to work within them.

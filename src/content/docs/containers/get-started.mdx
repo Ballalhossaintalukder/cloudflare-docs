@@ -5,45 +5,284 @@ sidebar:
   order: 2
 ---
 
-In this guide, you will get started with Cloudflare Images and make your first API request.
+In this guide, you will deploy a Worker that can make requests to one or more Containers in response to end-user requests.
+In this example, each container runs a small webserver written in Go.
+
+Requests are initially handled by the Worker, then passed to container-enabled [Durable Objects](/durable-objects).
+Each Durable Object runs alongside a container, manages starting and stopping it, and
+can interact with the container through its ports.
+
+In a simple app, the Durable Object may just boot the container and proxy requests to it.
+
+In a more complex app, having container-enabled Durable Objects allows you to route requests to individual stateful container
+instances, manage the container lifecycle, pass in custom starting commands and environment variables to containers, run hooks
+on container status changes, and more.
+
+This example Worker should give you a sense for simple Container use, and provide a starting point for more complex use cases.
 
 ## Prerequisites
 
-Before you make your first API request, ensure that you have a Cloudflare Account ID and an API token.
+### Get an API Token with the correct permissions
 
-Refer to [Find zone and account IDs](/fundamentals/setup/find-account-and-zone-ids/) for help locating your Account ID and [Create an API token](/fundamentals/api/get-started/create-token/) to learn how to create an access your API token.
+Ensure you have a Cloudflare Account ID and an API token.
 
-## Make your first API request
+Refer to [Find zone and account IDs](/fundamentals/setup/find-account-and-zone-ids/) for help locating
+your Account ID and [Create an API token](/fundamentals/api/get-started/create-token/) to learn how to create
+an access your API token.
 
-```bash
-curl --request POST \
-  --url https://api.cloudflare.com/client/v4/accounts/<ACCOUNT_ID>/images/v1 \
-  --header 'Authorization: Bearer <API_TOKEN>' \
-  --header 'Content-Type: multipart/form-data' \
-  --form file=@./<YOUR_IMAGE.IMG>
+When making your API token, make sure you supply the "Cloudchamber: Edit" and "Workers: Edit" permissions.
+
+{/* NOTE: Change to "Containers: Edit" once this permission exists */}
+
+### Ensure Docker is running locally
+
+In this guide, we will build and push a container image alongside your Worker code. By default, this process uses
+Docker to do so. You must have Docker running locally when you run `wrangler deploy`.
+
+If Docker is running properly, the `docker info` command will successfully run. If Docker is not running,
+the `docker info` command will hang or return an error including the message "Cannot connect to the Docker daemon".
+
+{/* FUTURE CHANGE: Add some image you can use if you don't have Docker running. */}
+{/* FUTURE CHANGE: Link to docs on alternative build/push options */}
+
+### Ensure Wrangler is Installed
+
+You must have the `wrangler` CLI tool installed. See [documentation on installing and updating wrangler](/workers/wrangler/install-and-update/)
+for more details.
+
+Currently, you will have to use a custom wrangler build to run `wrangler deploy`. Install it with the following command"
+
+```sh
+npm install -g https://prerelease-registry.devprod.cloudflare.dev/workers-sdk/prs/8482/npm-package-wrangler-8482
 ```
 
-## Enable transformations on your zone
-
-You can dynamically optimize images that are stored outside of Cloudflare Images and deliver them using [transformation URLs](/images/transform-images/transform-via-url/).
-
-Cloudflare will automatically cache every transformed image on our global network so that you store only the original image at your origin.
-
-To enable transformations on your zone:
-
-1. Log in to the [Cloudflare dashboard](https://dash.cloudflare.com/login) and select your account.
-2. Go to **Images** > **Transformations**.
-3. Go to the specific zone where you want to enable transformations.
-4. Select **Enable for zone**. This will allow you to optimize and deliver remote images.
-
 :::note
-
-With **Resize images from any origin** unchecked, only the initial URL passed will be checked. Any redirect returned will be followed, including if it leaves the zone, and the resulting image will be transformed.
-
+After running this command, your global `wrangler` command will be overridden.
 :::
 
+## Deploy a Container to Workers
+
+Now that your environment is set up, you can write your Worker.
+
+### Get a Template
+
+First, clone the starter template and move into the folder:
+
+{/* FUTURE CHANGE: THIS WILL BE C3 */}
+
+```sh
+git clone https://github.com/mikenomitch/containers-starter-go.git
+cd containers-starter-go
+```
+
+### Deploy with Wrangler
+
+Now, deploy your Worker:
+
+```sh
+wrangler deploy
+```
+
+When you run this command, several things happen:
+
+- Wrangler builds your image using Docker.
+- Wrangler pushes you image to the Cloudchamber Image Registry, which is automatically
+  integrated with your Cloudflare account.
+- Wrangler deploys your Worker, which includes setting up a "Container" for it to interact with.
+
 :::note
-
-If you are using transformations in a Worker, you need to include the appropriate logic in your Worker code to prevent resizing images from any origin. Unchecking this option in the dash does not apply to transformation requests coming from Cloudflare Workers.
-
+The build and push usually take the longest on the first deploy. Future deploys
+will go faster by [reusing cached image layers](https://docs.docker.com/build/cache/).
 :::
+
+After you deploy your Worker for the first time, you will need to wait several minutes until
+it is ready to receive requests. Unlike Workers, Containers take a few minutes to be provisioned.
+During this time, requests are sent to the Worker, but calls to the Container will error.
+
+{/* FUTURE CHANGE: Add a command to check status from the CLI */}
+
+### Make requests to Containers
+
+Now, open the URL for your worker. It should look something like `https://container-starter.YOUR_ACCOUNT_NAME.workers.dev`.
+
+If you make requests to the paths `/specific/1` or `/specific/2`, these requests are routed to specific containers.
+Each different path after "/specific/" routes to a unique container.
+
+If you make requests to `/lb`, you will load balanace requests to one of 3 containers chosen at random.
+
+You can confirm this behavior by reading the output of each request.
+
+## Understanding the Code
+
+### Worker Config
+
+First, wrangler config sets up a container and a Durable Object that will run alongside it.
+
+```toml
+[[containers]]
+instances = 10
+name = "hello-containers"
+class_name = "MyContainer"
+image = "./Dockerfile"
+
+[[durable_objects.bindings]]
+name = "MY_CONTAINER"
+class_name = "MyContainer"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["MyContainer"]
+```
+
+Important points about this config:
+
+- `image` points to a Dockerfile or to a directory containing a Dockerfile.
+- `class_name` must be a Durable Object class name.
+- `instances` declares the maximum number of simultaneously running container instances
+  that will run.
+- The Durable Object must use `new_sqlite_classes` not `new_classes`.
+
+{/* FUTURE CHANGE: Change instances to max_instances */}
+:::note
+`instances` **does not** mean the number of instances that will automatically run, it means the maximum number.
+
+We plan to make `instances` optional some time during the Closed Beta period.
+:::
+
+### The Container Image
+
+The container image itself has to run on the `linux/amd64` architecture, but aside from that has few limitations.
+
+In this case, it is a simple Golang server that responds to requests on port 8080:
+
+{/* TODO: Add reference about env variables that are auto-inserted */}
+
+```go
+func handler(w http.ResponseWriter, r *http.Request) {
+	country := os.Getenv("CLOUDFLARE_COUNTRY_A2")
+	location := os.Getenv("CLOUDFLARE_LOCATION")
+	region := os.Getenv("CLOUDFLARE_REGION")
+
+	fmt.Fprintf(w, "Hi, I'm a container running in %s, %s, which is part of %s ", location, country, region)
+}
+
+func main() {
+	http.HandleFunc("/", handler)
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+```
+
+For communication between the container and Workers, you will likely want to listen on
+a specific port.
+
+:::note
+After deploying the example code, feel free to replace the provided image with one of your own.
+:::
+
+### Worker code
+
+First note the Durable Object `MyContainer`:
+
+```js
+export class MyContainer extends DurableObject {
+	constructor(ctx, env) {
+		super(ctx, env);
+		ctx.blockConcurrencyWhile(async () => {
+			await startAndWaitForPort(ctx.container, OPEN_CONTAINER_PORT);
+		});
+	}
+
+	async fetch(request) {
+		return await proxyFetch(this.ctx.container, request, OPEN_CONTAINER_PORT);
+	}
+}
+```
+
+When the Durable Object instance is created, it starts a new container
+using the `startAndWaitForPort` method, which calls `this.ctx.container.start`.
+
+The `fetch` method calls the `proxyFetch` helper, which passes a request
+to the server running on the open port.
+
+In this case, the Workers request will be proxied to the Golang server
+listeining on port 8080.
+
+{/* FUTURE CHANGE: Document the API for this.ctx.container in reference! */}
+
+:::note
+Currently, the container is stopped when the Durable Object is put to sleep.
+
+We plan to add the ability to keep the container alive for a configurable amount of time
+after the most recent request. This will be added soon.
+:::
+
+In the Worker's main `fetch` handler, Container-enabled Durable Objects are
+launched in one of two ways:
+
+- Making requests to `/specific/` passes requests to a new container for
+  each path. This is done by spinning up a new Durable Object and Container. You may note
+  that the first request to a new path takes longer than subsequent requests, this is
+  because a new container is booting.
+
+  ```js
+  if (pathname.startsWith("/specific/")) {
+  	// In this case, each unique pathname with spawn a new container
+  	let id = env.MY_CONTAINER.idFromName(pathname);
+  	let stub = env.MY_CONTAINER.get(id);
+  	return await stub.fetch(request);
+  }
+  ```
+
+- Making requests to `/lb` will load balance requests across several containers.
+  This uses a simple `loadBalance` helper method currently, which picks an ID at random
+  from a set number (defined with `LB_INSTANCES`), then routes to that Durable Object instance.
+
+  ```js
+  if (pathname.startsWith("/lb")) {
+  	let container = await loadBalance(env.MY_CONTAINER, LB_INSTANCES);
+  	return await container.fetch(request);
+  }
+  ```
+
+This allows for multiple ways of using Containers:
+
+- If you simply want to send requests to many stateless and interchangeable containers,
+  you should load balance.
+- If you have stateful services or need individually addressable
+  containers, you should request specific Durable Objects.
+- If you are running short-lived jobs, want fine-grained control over the container
+  lifecycle, want to parameterize container entrypoint or env vars, or
+  want to chain together multiple container calls, you should request specific
+  Durable Objects.
+
+:::note
+Currently, routing requests to one of many interchangeable Container instances is accomplished
+with a function like `loadBalance`, written in the user's code.
+
+We will add official first-party mechanisms for scaling and load-balanced routing soon.
+:::
+
+## View Containers in your Dashboard
+
+The Containers Dashboard shows you helpful information about your Containers, including:
+
+- Status and Health
+- Metrics
+- Logs
+
+After launching your Worker, navigate to the Containers Dashboard
+by clicking on "Containers" under "Workers & Pages" in your sidebar.
+
+{/* TODO: Add note about navigation via the Worker once this is done */}
+
+## Next Steps
+
+To do more:
+
+- Modify the image by changing the Dockerfile and calling `wrangler deploy`
+- Review our [Examples](/containers/examples) for more inspiration
+- Get [more information on the Containers Closed Beta](/containers/reference/closed-beta-info)
+
+{/* Point to other examples */}
+{/* Reference Materials and more docs */}
+{/* Private beta information */}

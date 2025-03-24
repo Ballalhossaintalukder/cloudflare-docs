@@ -1,0 +1,23 @@
+---
+pcx_content_type: navigation
+title: Platform Details
+sidebar:
+  order: 8
+  group:
+    hideIndex: true
+---
+
+## Environment variables
+
+The container runtime automatically sets the following variables:
+
+- `CLOUDFLARE_COUNTRY_A2` - a two-letter code of a country the container is placed in
+- `CLOUDFLARE_DEPLOYMENT_ID` - a deployment ID
+- `CLOUDFLARE_LOCATION` - a name of a location the container is placed in
+- `CLOUDFLARE_NODE_ID` - an ID of a machine the container runs on
+- `CLOUDFLARE_PLACEMENT_ID` - a placement ID
+- `CLOUDFLARE_REGION` - a region name
+
+:::note
+If you supply environment variables with the same names, supplied values will override predefined values.
+:::
