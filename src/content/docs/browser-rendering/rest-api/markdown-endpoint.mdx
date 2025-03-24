@@ -9,6 +9,8 @@ The `/markdown` endpoint retrieves a webpage's content and converts it into Mark
 
 ## Basic usage
 
+### Using a URL
+
 This example fetches the Markdown representation of a webpage.
 
 ```bash
@@ -26,6 +28,28 @@ curl -X 'POST' 'https://api.cloudflare.com/client/v4/accounts/<accountId>/browse
 {
 	"success": true,
 	"result": "# Example Domain\n\nThis domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.\n\n[More information...](https://www.iana.org/domains/example)"
+}
+```
+
+### Using raw HTML
+
+Instead of fetching a URL, you can provide raw HTML content directly.
+
+```bash
+curl -X 'POST' 'https://api.cloudflare.com/client/v4/accounts/<accountId>/browser-rendering/markdown' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <apiToken>' \
+  -d '{
+    "html": "<div>Hello World</div>"
+  }'
+```
+
+### JSON response
+
+```json title="json response"
+{
+	"success": true,
+	"result": "Hello World"
 }
 ```
 
