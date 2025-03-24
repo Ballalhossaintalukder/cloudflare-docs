@@ -1,0 +1,78 @@
+---
+title: Deploy to Cloudflare Button
+pcx_content_type: concept
+sidebar:
+  order: 5
+head: []
+description: Set Up a Deploy to Cloudflare Button
+---
+
+# Using a Deploy to Cloudflare Button
+If you're building a Workers application and would like to share it with other developers, you can embed a Deploy to Cloudflare button in your README, blog post, or documentation to enable others to quickly bootstrap your application on their own Cloudflare account. Deploy to Cloudflare buttons eliminate the need for complex setup, allowing developers to get started with your public GitHub or GitLab repository in just a few clicks.
+
+<insert deploy button here that links to example/>
+
+## What are Deploy to Cloudflare Buttons? 
+Deploy to Cloudflare buttons simplify the deployment of a Workers application by enabling Cloudflare to:
+* **Clone a Git repository**: Cloudflare clones your source repository into the user's GitHub/GitLab account where they can continue development after deploying. 
+* **Configure a project**: Your users can customize key details such as repository name, Worker name, and required resource names in a single setup page with customizations reflected in the newly created Git repository. 
+* **Build & deploy**: Cloudflare builds the application using Workers Builds and deploys it to the Cloudflare network. Any required resources are automatically provisioned and bound to the Worker without additional setup.
+
+<insert flow with screenshots/>
+
+## How to Set Up Deploy to Cloudflare buttons 
+Deploy to Cloudflare buttons can be embedded anywhere developers might want to launch your project. To add a Deploy to Cloudflare button, copy the following snippet and replace the Git repository URL with your project's URL. You can also optionally specify a subdirectory. 
+
+
+<Tabs syncKey="DeployButtonSnippet"> <TabItem label="HTML">
+```html
+<a href="https://deploy.workers.cloudflare.com/?url=<your git repo URL>"><img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare"/></a>
+```
+
+</TabItem> 
+
+<TabItem label="Markdown">
+```md
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=<git repo URL>)
+```
+
+</TabItem> 
+</Tabs>
+
+If you have already deployed your application using Workers Builds, you can generate a Deploy to Cloudflare button directly from the Cloudflare dashboard by clicking the share button and copying the provided snippet. 
+
+<insert image of share icon pop out/>
+
+Once you have your snippet, you can paste this wherever you would like your button to be displayed. 
+
+## Automatic Resource Provisioning 
+If your Worker application requires Cloudflare resources, they will be automatically provisioned as part of the deployment. Currently, supported resources include:
+* **Storage**: KV namespaces, D1 databases, R2 buckets, Hyperdrive and Vectorize
+* **Compute**: Durable Objects, Workers AI, Containers and Queues
+
+Cloudflare will read the Wrangler configuration file of your source repo to determine resource requirements for your application. During deployment, Cloudflare will provision any necessary resources and update the Wrangler configuration where applicable for newly created resources (e.g. database IDs, namespace IDs). To ensure successful deployment, please make sure your source repository includes default values for resource names, resource IDs and any other properties for each binding. 
+
+## Best Practices 
+**Configuring Build/Deploy commands**: If you are using custom  `build` and `deploy` scripts in your package.json (e.g. if using a full stack framework or running D1 migrations), Cloudfare will automatically detect and pre-populate the build and deploy fields. Users can choose to modify or accept the custom commands during deployment configuration. 
+
+<insert screenshot of build and deploy command UI/>
+
+If no `deploy` script is specified, Cloudflare will preconfigure `npx wrangler deploy` by default. If no `build` script is specified, Cloudflare will leave this field blank. 
+
+** Running D1 Migrations**: If you would like to run migrations as part of your set up, you can specify this in your `package.json` by running your migrations as part of your `deploy` script. The migration command should reference the binding name rather than the database name to ensure migrations are successful when users specify a database name that is different from that of your source repository. The following is an example of how you can set up the scripts section of your `package.json`:
+
+```json
+{
+  "scripts": {
+  "build": "astro build", 
+  "deploy": "npm run db:migrations:apply && wrangler deploy"
+  "db:migrations:apply": "wrangler d1 migrations apply DB_BINDING --remote",
+  }
+}
+```
+
+## Not currently supported 
+* **Monorepos**: Cloudflare does not fully support monorepos unless your application is completely isolated within a subdirectory and has no dependencies outside of that subdirectory (for example, [a monorepo of example applications](https://github.com/cloudflare/templates)). If your application relies on dependencies outside its subdirectory, the build will fail. Additionally, if your monorepo contains multiple Workers applications, they will not be deployed together. You must configure a separate Deploy to Cloudflare button for each application. The user will manually create a distinct Workers application for each subdirectory.
+* **Pages applications**: Deploy to Cloudflare buttons only support Workers applications today.
+* **Non gitHub.com/gitLab.com repositories**: Source repositories from anything other than gitHub.com and gitLab.com are not supported. Self-hosted versions of GitHub and GitLab are also not supported. 
+* **Private repositories**: Repositories must be public in order for others to successfully use your Deploy to Cloudflare button. 
