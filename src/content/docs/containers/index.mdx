@@ -33,6 +33,7 @@ Enhance your Workers with serverless containers
 <Plan type="workers-paid" />
 
 With Containers, you can build applications that integrate Workers with a serverless container runtime.
+
 Deploy your container image to Region:Earth without worrying about managing infrastructure - just define your
 Worker and `wrangler deploy`.
 
@@ -53,7 +54,6 @@ async fetch(request, env) {
 }
 
 // define a durable object to run alongside your container
-
 export class MyContainer extends DurableObject {
 	// start the container with the durable object
   constructor(ctx, env) {
@@ -63,11 +63,10 @@ export class MyContainer extends DurableObject {
     );
   }
 
-    // proxy requests to the container
-    async fetch(request) {
-    	return await proxyFetch(this.ctx.container, request, 4000);
-    }
-
+	// proxy requests to the container
+	async fetch(request) {
+		return await proxyFetch(this.ctx.container, request, 4000);
+	}
 }
 
 ````
