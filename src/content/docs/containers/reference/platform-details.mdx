@@ -2,10 +2,40 @@
 pcx_content_type: navigation
 title: Platform Details
 sidebar:
-  order: 8
+  order: 2
   group:
     hideIndex: true
 ---
+
+This page contains various details about the Containers platform:
+
+## How locations are selected
+
+When initially deploying a Container, Cloudflare will select various locations across our
+network to deploy instances to. These locations will span multiple regions.
+
+When a Container instance is requested with `this.ctx.container.start`, the nearest free
+container instance will be selected from the pre-initialized locations. This will
+likely be in the same region as the external request, but may not be. Once the container
+instance is running, any future requests will be routed to the initial location.
+
+An Example:
+
+- A user deploys a Container. Cloudflare automatically readies instances across its Network.
+- A request is made from a client in Bariloche, Argentia. It reaches the Worker in
+  Cloudflare's location in Neuquen, Argentina.
+- This Worker request calls `MY_CONTAINER.get("session-1337")` which brings up a Durable
+  Object, which then calls `this.ctx.container.start`.
+- This requests the nearest free Container instance.
+- Cloudflare recognizes that an instance is free in Buenos Aires, Argentina, and
+  starts it there.
+- A different user needs to route to the same container. This user's request reaches
+  the Worker running in Cloudflare's location in San Diego.
+- The Worker again calls `MY_CONTAINER.get("session-1337")`.
+- If the initial container instance is still running, the request is routed to the location
+  in Buenos Aires. If the initial container has gone to sleep, Cloudflare will once
+  again try to find the nearest "free" instance of the Container, likely
+  one in North America, and start an instance there.
 
 ## Environment variables
 

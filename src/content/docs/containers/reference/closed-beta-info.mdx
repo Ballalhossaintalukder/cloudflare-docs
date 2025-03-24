@@ -1,8 +1,8 @@
 ---
 pcx_content_type: reference
-title: Private Beta Info
+title: Closed Beta Info
 sidebar:
-  order: 6
+  order: 1
 ---
 
 Currently, Containers are in private beta. We plan to make Containers available in open beta in several months.
@@ -17,8 +17,8 @@ There are several known changes we plan to make prior to open beta, as well as m
 We plan to make the following changes:
 
 - Add Logs to the Dashboard
-- Add autoscaling and load balancing to Containers
-- Add atomic Worker updates so Worker code and Container code stay in sync
+- Add autoscaling and load balancing to Containers, using the interface `env.MY_CONTAINER.fetch()`
+- Ensure Worker code and Container code stay in sync with atomic code updates
 - Improve the local dev experience
 - Expose more information on Container Settings in the dashboard
 - Increase limits on number of containers and container size
@@ -46,3 +46,5 @@ There are several areas where we wish to gather feedback from users:
 - Do you need different mechanisms for routing requests to containers?
 - Do you need different mechanisms for scaling containers?
 - Do you want to integrate Containers with any other Cloudflare services? If so, which ones and how?
+
+At any point during the Beta, feel free to [give feedback using this form](https://forms.gle/CscdaEGuw5Hb6H2s7).

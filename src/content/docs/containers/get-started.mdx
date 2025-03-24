@@ -10,7 +10,9 @@ In this example, each container runs a small webserver written in Go.
 
 Requests are initially handled by the Worker, then passed to container-enabled [Durable Objects](/durable-objects).
 Each Durable Object runs alongside a container, manages starting and stopping it, and
-can interact with the container through its ports.
+can interact with the container through its ports. Containers will likely run near the Worker instance
+requesting them, but not necessarily. See ["How Locations are Selected"](/containers/reference/platform-details/#how-are-locations-are-selected)
+for details.
 
 In a simple app, the Durable Object may just boot the container and proxy requests to it.
 
